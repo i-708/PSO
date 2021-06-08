@@ -8,18 +8,29 @@ import time
 
 #粒子群クラス
 class Particle:
-    #コンストラクタ
+
     def __init__(self,N):
-        self.n = N #粒子数
-        self.x = np.array([[random.uniform(-5, 5)for i in range(self.n)], [random.uniform(-5, 5)for j in range(self.n)]]) #粒子位置
-        self.pbest = self.x #パーソナルベスト
-        self.gbest = np.array([[float("inf")],[float("inf")]]) #グローバルベスト
-        self.w = 0.5 #慣性定数
-        self.v = np.array([[0 for i in range(self.n)], [0 for j in range(self.n)]]) #粒子の速度
-        self.r1 = 0.14 #乱数の最大値(1)
-        self.r2 = 0.14 #乱数の最大値(2)
-        self.xEvaluate = np.array([float("inf") for i in range(self.n)]) #現在位置の評価関数の値
-        self.pbestEvaluate = np.array([float("inf") for i in range(self.n)]) #パーソナルベストの評価関数の値
+        #粒子数
+        self.n = N
+        #粒子位置
+        self.x = np.array([[random.uniform(-5, 5)for i in range(self.n)], [random.uniform(-5, 5)for j in range(self.n)]])
+         #パーソナルベスト
+        self.pbest = self.x
+        #グローバルベスト
+        self.gbest = np.array([[float("inf")],[float("inf")]])
+        #慣性定数
+        self.w = 0.5
+        #粒子の速度
+        self.v = np.array([[0 for i in range(self.n)], [0 for j in range(self.n)]])
+        #乱数の最大値(1)
+        self.r1 = 0.14
+        #乱数の最大値(2)
+        self.r2 = 0.14
+        #現在位置の評価関数の値
+        self.xEvaluate = np.array([float("inf") for i in range(self.n)])
+        #パーソナルベストの評価関数の値
+        self.pbestEvaluate = np.array([float("inf") for i in range(self.n)])
+        
         #初期設定
         self.pbestUpdate()
         self.gbestUpdate()
@@ -69,7 +80,8 @@ N=30 #粒子数
 #粒子の設定
 p = Particle(N)
 
-T = 50 #打ち切り時刻
+#打ち切り時刻
+T = 50
 
 #シミュレーション
 for t in range(T):
