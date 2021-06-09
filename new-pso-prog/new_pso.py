@@ -128,8 +128,8 @@ def main():
         plt.pause(0.05)
         plt.gca().clear()
 
-    print('最適解:', particles[0].global_best)
-    print('最適値:', particles[0].global_func_ans)
+    print('最適解:', Particle.global_best)
+    print('最適値:', Particle.global_func_ans)
 
 
 if __name__ == '__main__':
