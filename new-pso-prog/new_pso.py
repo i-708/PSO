@@ -2,7 +2,7 @@
 
 '''
 新しくPSOのプログラムを書き直し中
-やるべきこと：グローバル変数が粒子ごとに保持されているバグを改善(実際はクラスで一つのグローバルベストを持つ)
+やるべきこと：計算量の改善及び派生PSOのプログラム作成
 '''
 
 import random
@@ -18,7 +18,7 @@ class Particle():
                     for (x_max_elem, x_min_elem) in zip(x_max, x_min)]
     c = [1.0, 1.0]
     rand = [0.14, 0.14]
-    weight = 0.8
+    weight = 0.5
 
     def __init__(self, D, T_MAX):
         T = T_MAX + 1
@@ -40,17 +40,17 @@ class Particle():
 
     # 速度を更新するメソッド
     def velocity_update(self, t, D):
-        w = self.weight
+        w = Particle.weight
         v = self.velocity[t]
         x = self.x[t]
         pbest = self.personal_best
-        gbest = self.global_best
-        c1 = self.c[0]
-        c2 = self.c[1]
+        gbest = Particle.global_best
+        c1 = Particle.c[0]
+        c2 = Particle.c[1]
 
         for i in range(D):
-            rand1 = random.uniform(0, self.rand[0])
-            rand2 = random.uniform(0, self.rand[1])
+            rand1 = random.uniform(0, Particle.rand[0])
+            rand2 = random.uniform(0, Particle.rand[1])
 
             self.velocity[t + 1][i] = w*v[i] + c1*rand1 * \
                 (pbest[i] - x[i]) + c2*rand2*(gbest[i] - x[i])
@@ -68,11 +68,11 @@ class Particle():
     # グローバルベストを更新するメソッド
     def global_best_update(self):
         pesonal_ans = self.personal_func_ans
-        global_ans = self.global_func_ans
+        global_ans = Particle.global_func_ans
 
         if pesonal_ans < global_ans:
-            self.global_func_ans = pesonal_ans
-            self.global_best = list(self.personal_best)
+            Particle.global_func_ans = pesonal_ans
+            Particle.global_best = list(self.personal_best)
 
     # 評価関数を計算するメソッド
     def calc_evaluation_func(self, t):
