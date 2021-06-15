@@ -34,7 +34,7 @@ class Particle():
     def position_update(self, t, D):
         x = self.x[t]
         v = self.velocity[t + 1]
-        
+
         self.x[t + 1] = x + v
 
     # 速度を更新するメソッド
@@ -51,6 +51,7 @@ class Particle():
         
         self.velocity[t + 1] = w*v + c1*rand1*(pbest - x) + c2*rand2*(gbest - x)
         
+
         self.velocity[t + 1] = np.where(self.velocity[t + 1] < Particle.velocity_max, self.velocity[t + 1], Particle.velocity_max)
 
 
@@ -88,6 +89,63 @@ class EvaluationFunc():
         f = pow(x[0], 2) + pow(x[1], 2)
         return f
 
+# 3d描画を行う関数
+def plot_graph(particles,N,T_MAX):
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+    
+    sleep_time = 0.05
+    
+    n = 300
+    func_x = np.linspace(-5,5,n)
+    func_y = np.linspace(-5,5,n)
+    X,Y = np.meshgrid(func_x, func_y)
+    Z = pow(X,2)+pow(Y,2)
+    
+    # Figureを追加
+    fig = plt.figure(figsize = (8, 8))
+
+    # axをfigureに設定する
+    ax = fig.add_subplot(111, projection='3d')
+    
+    # 曲線を描画
+    for t in range(T_MAX):
+        # Axesのタイトルを設定
+        ax.set_title("PSO_plot", size = 20)
+        
+        # 軸ラベルを設定
+        ax.set_xlabel("x", size = 14, color = "r")
+        ax.set_ylabel("y", size = 14, color = "r")
+        ax.set_zlabel("z", size = 14, color = "r")
+        
+        # 軸目盛を設定
+        ax.set_xticks([-5.0, -2.5, 0.0, 2.5, 5.0])
+        ax.set_yticks([-5.0, -2.5, 0.0, 2.5, 5.0])
+        
+        # 描画の固定
+        ax.set_xlim(Particle.x_min[0],Particle.x_max[0])
+        ax.set_ylim(Particle.x_min[0],Particle.x_max[0])
+        ax.set_zlim(-1,EvaluationFunc.calculate(Particle.x_max))
+        
+        # 粒子ごとに描画
+        for particle_num in range(N):
+            x = particles[particle_num].x[t]
+            ax.scatter(x[0], x[1], EvaluationFunc.calculate(x),c = "blue")
+            
+        # 最適解の描画
+        ax.scatter(0, 0, 0,c = "red")
+        
+        # 評価関数の描画
+        ax.plot_wireframe(X,Y,Z,color = "gray")
+        
+        plt.draw()
+        # ポーズ
+        plt.pause(sleep_time)
+        # グラフ初期化
+        plt.cla()
+
+    
 
 def main():
 
@@ -107,23 +165,14 @@ def main():
     Particle.global_best = [float('inf') for _ in range(D)]
 
     # シミュレーション
-    for time in range(T_MAX):
+    for t in range(T_MAX):
         for particle_num in range(N):
-            particles[particle_num].calc_evaluation_func(time)
+            particles[particle_num].calc_evaluation_func(t)
             particles[particle_num].global_best_update()
-            particles[particle_num].velocity_update(time, D)
-            particles[particle_num].position_update(time, D)
-
-            x = particles[particle_num].x[time][0]
-            y = particles[particle_num].x[time][1]
-
-            plt.plot(x, y, ".", c="blue")
-            plt.xlim(-10, 10)
-            plt.ylim(-10, 10)
-            plt.plot(0, 0, "o", c="red")
-        plt.pause(0.05)
-        plt.gca().clear()
-
+            particles[particle_num].velocity_update(t, D)
+            particles[particle_num].position_update(t, D)
+    # 3d描画
+    plot_graph(particles,N,T_MAX)
     print('最適解:', Particle.global_best)
     print('最適値:', Particle.global_func_ans)
 
