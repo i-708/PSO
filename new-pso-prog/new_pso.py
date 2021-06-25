@@ -8,6 +8,7 @@
 import random
 import matplotlib.pyplot as plt
 import numpy as np
+from csv_write import WriteData
 
 class Particle():
     # global_best = []
@@ -157,13 +158,13 @@ def plot_graph(particles,N,T_MAX):
 def main():
 
     # 粒子数
-    N = 30
+    N = 5
 
     # 次元数
     D = 2
 
     # 最大ステップ数
-    T_MAX = 50
+    T_MAX = 10
     
     # グローバルベストの設定
     Particle.global_best = np.array([[float('inf') for _ in range(D)] for _ in range(T_MAX + 1)])
@@ -185,6 +186,9 @@ def main():
     print('最適解:', Particle.global_best[T_MAX])
     print('最適値:', Particle.global_func_ans)
 
+    # データの保存
+    w = WriteData()
+    w.csv_writer(particles,Particle.global_best)
 
 if __name__ == '__main__':
     main()

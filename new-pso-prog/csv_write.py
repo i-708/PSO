@@ -1,7 +1,7 @@
 import datetime
 import os
 import csv
-from new_pso import Particle
+from numpy import array
 
 class WriteData():
     
@@ -18,22 +18,13 @@ class WriteData():
         # ディレクトリの生成
         os.mkdir(self.dir_path)
     
-    def csv_writer(self,particles):
+    # csvにデータを書き込む関数
+    def csv_writer(self,particles,gbest):
         D = len(particles[0].x[0])
         T_MAX = len(particles[0].x)
-
-        x_label = []
-        v_label = []
-        
-        # xとvのlabelを生成
-        for i in range(D):
-            x_label_name = 'x' + str(i)
-            v_label_name = 'v' + str(i)
-            x_label.append(x_label_name)
-            v_label.append(v_label_name)
         
         # rowの名前を生成
-        row_name = ['T','particle_num'] + x_label + v_label + ['func_ans','pbest','gbest']
+        row_name = ['T','particle_num','x','velocity','pbest','gbest']
         
         # ファイル名の生成
         file_name = 'result.csv'
@@ -42,14 +33,28 @@ class WriteData():
         file_path = self.dir_path + '/' + file_name
 
         # csvへ書き込み
-        with open(file_path, mode='w') as f:
+        with open(file_path, mode='w', newline='') as f:
             writer = csv.writer(f)
             
             # 行の名前を書き込み
             writer.writerow(row_name)
             
+            # データの書き込み
+            for t in range(T_MAX):
+                for particle_num in range(len(particles)):
+                    # x,vの取得
+                    x_list = self.read_particles_xv(D,particles[particle_num].x[t])
+                    v_list = self.read_particles_xv(D,particles[particle_num].velocity[t])
+                    
+                    # 書き込むデータを作成
+                    write_data = [t, particle_num] + [x_list] + [v_list] + [particles[particle_num].personal_best[t], gbest[t]]
+                    
+                    # データの書き込み
+                    writer.writerow(write_data)
             
-
-# w = WriteData()
-
-# w.csv_writer()
+    # x,vの値を取得して返す関数
+    def read_particles_xv(self,D,data):
+        read_data = []
+        for d in range(D):
+            read_data.append(data[d])
+        return array(read_data)
