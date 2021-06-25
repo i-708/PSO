@@ -21,7 +21,7 @@ class WriteData():
     # csvにデータを書き込む関数
     def csv_writer(self,particles,gbest):
         D = len(particles[0].x[0])
-        T_MAX = len(particles[0].x)
+        T_MAX = len(particles[0].x) - 1
         
         # rowの名前を生成
         row_name = ['T','particle_num','x','velocity','pbest','gbest']
