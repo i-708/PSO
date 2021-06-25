@@ -18,7 +18,7 @@ class WriteData():
         # ディレクトリの生成
         os.mkdir(self.dir_path)
     
-    # csvにデータを書き込む関数
+    # csvにデータを書き込むメソッド
     def csv_writer(self,particles,gbest):
         D = len(particles[0].x[0])
         T_MAX = len(particles[0].x) - 1
@@ -52,7 +52,7 @@ class WriteData():
                     # データの書き込み
                     writer.writerow(write_data)
             
-    # x,vの値を取得して返す関数
+    # x,vの値を取得して返すメソッド
     def read_particles_xv(self,D,data):
         read_data = []
         for d in range(D):
