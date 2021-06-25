@@ -9,9 +9,8 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 class Particle():
-    global_best = []
+    # global_best = []
     global_func_ans = float('inf')
     x_max = np.array([5.0, 5.0])
     x_min = np.array([-5.0, -5.0])
@@ -22,7 +21,7 @@ class Particle():
 
     def __init__(self, D, T_MAX):
         T = T_MAX + 1
-        self.personal_best = np.array([float('inf') for _ in range(D)])
+        self.personal_best = np.array([[float('inf') for _ in range(D)] for _ in range(T)])
         self.personal_func_ans = float('inf')
         self.velocity = np.array([[float('inf') for _ in range(D)] for _ in range(T)])
         self.x = np.array([[float('inf') for _ in range(D)] for _ in range(T)])
@@ -31,7 +30,7 @@ class Particle():
             self.velocity[0][i] = random.uniform(0, self.velocity_max[i])
 
     # 位置を更新するメソッド
-    def position_update(self, t, D):
+    def position_update(self, t):
         x = self.x[t]
         v = self.velocity[t + 1]
 
@@ -42,8 +41,8 @@ class Particle():
         w = Particle.weight
         v = self.velocity[t]
         x = self.x[t]
-        pbest = self.personal_best
-        gbest = Particle.global_best
+        pbest = self.personal_best[t]
+        gbest = Particle.global_best[t]
         c1 = Particle.c[0]
         c2 = Particle.c[1]
         rand1 = np.array([random.uniform(0, Particle.rand[0]) for _ in range(D)])
@@ -60,16 +59,24 @@ class Particle():
         pesonal_ans = self.personal_func_ans
         if f < pesonal_ans:
             self.personal_func_ans = f
-            self.personal_best = np.array(self.x[t])
+            self.personal_best[t] = np.array(self.x[t])
+        else:
+            self.personal_best[t] = self.personal_best[t - 1]
+
 
     # グローバルベストを更新するメソッド
-    def global_best_update(self):
+    def global_best_update(self,t):
         pesonal_ans = self.personal_func_ans
         global_ans = Particle.global_func_ans
 
         if pesonal_ans < global_ans:
             Particle.global_func_ans = pesonal_ans
-            Particle.global_best = np.array(self.personal_best)
+            Particle.global_best[t] = np.array(self.personal_best[t])
+    
+    # 次のグローバルベストの初期化
+    @staticmethod
+    def next_global_best_update(t):
+        Particle.global_best[t + 1] = Particle.global_best[t]
 
     # 評価関数を計算するメソッド
     def calc_evaluation_func(self, t):
@@ -157,23 +164,25 @@ def main():
 
     # 最大ステップ数
     T_MAX = 50
+    
+    # グローバルベストの設定
+    Particle.global_best = np.array([[float('inf') for _ in range(D)] for _ in range(T_MAX + 1)])
 
     # 粒子のオブジェクト
     particles = [Particle(D, T_MAX) for _ in range(N)]
-
-    # グローバルベストの設定
-    Particle.global_best = [float('inf') for _ in range(D)]
 
     # シミュレーション
     for t in range(T_MAX):
         for particle_num in range(N):
             particles[particle_num].calc_evaluation_func(t)
-            particles[particle_num].global_best_update()
+            particles[particle_num].global_best_update(t)
             particles[particle_num].velocity_update(t, D)
-            particles[particle_num].position_update(t, D)
+            particles[particle_num].position_update(t)
+        Particle.next_global_best_update(t)
+        
     # 3d描画
     plot_graph(particles,N,T_MAX)
-    print('最適解:', Particle.global_best)
+    print('最適解:', Particle.global_best[T_MAX])
     print('最適値:', Particle.global_func_ans)
 
 
