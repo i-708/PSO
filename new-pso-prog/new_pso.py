@@ -11,7 +11,6 @@ import numpy as np
 from csv_write import WriteData
 
 class Particle():
-    # global_best = []
     global_func_ans = float('inf')
     x_max = np.array([5.0, 5.0])
     x_min = np.array([-5.0, -5.0])
