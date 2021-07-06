@@ -22,29 +22,30 @@ class WriteData():
         # ディレクトリの生成
         os.mkdir(self.dir_path)
 
-    def json_write(self,particles):
+    # jsonにデータを書き込むメソッド
+    def json_write(self, particles):
         # パラメータ準備
         D = len(particles[0].x[0])
         D_list = list(range(D))
         c_list = list(range(2))
         param_dict = {
-            'N' : len(particles),
-            'D' : D,
-            'T_MAX' : len(particles[0].x) - 1,
-            'x_max' : dict(zip(D_list,particles[0].x_max)),
-            'x_min' : dict(zip(D_list,particles[0].x_min)),
-            'velocity_max' : dict(zip(D_list,particles[0].velocity_max)),
-            'c' : dict(zip(c_list,particles[0].c)),
-            'rand' : dict(zip(D_list,particles[0].rand)),
-            'weight' : particles[0].weight
+            'N': len(particles),
+            'D': D,
+            'T_MAX': len(particles[0].x) - 1,
+            'x_max': dict(zip(D_list, particles[0].x_max)),
+            'x_min': dict(zip(D_list, particles[0].x_min)),
+            'velocity_max': dict(zip(D_list, particles[0].velocity_max)),
+            'c': dict(zip(c_list, particles[0].c)),
+            'rand': dict(zip(D_list, particles[0].rand)),
+            'weight': particles[0].weight
         }
-        
+
         # ファイル名の生成
         file_name = 'param.json'
 
         # pathの生成
         file_path = self.dir_path + '/' + file_name
-        
+
         # jsonへ書き込み
         with open(file_path, mode='w') as f:
             json.dump(param_dict, f)

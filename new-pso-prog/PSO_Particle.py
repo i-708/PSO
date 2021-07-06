@@ -54,7 +54,6 @@ class Particle():
                                         self.velocity[t + 1], Particle.velocity_max)
 
     # パーソナルベストを更新するメソッド
-
     def personal_best_update(self, f, t):
         pesonal_ans = self.personal_func_ans
         if f < pesonal_ans:
@@ -72,7 +71,7 @@ class Particle():
             Particle.global_func_ans = pesonal_ans
             Particle.global_best[t] = np.array(self.personal_best[t])
 
-    # 次のグローバルベストの初期化
+    # 次のグローバルベストの初期化をするメソッド
     @staticmethod
     def next_global_best_update(t):
         Particle.global_best[t + 1] = Particle.global_best[t]
