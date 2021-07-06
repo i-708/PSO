@@ -42,8 +42,9 @@ def main():
     print('最適値:', Particle.global_func_ans)
 
     # データの保存
-    w = WriteData()
-    w.csv_writer(particles, Particle.global_best)
+    wd = WriteData()
+    wd.csv_writer(particles, Particle.global_best)
+    wd.json_write(particles)
 
 
 if __name__ == '__main__':
