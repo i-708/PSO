@@ -6,6 +6,7 @@ from EvaluationFunc import EvaluationFunc
 
 
 class Particle():
+    global_best = np.array([])
     global_func_ans = float('inf')
     x_max = np.array([5.0, 5.0])
     x_min = np.array([-5.0, -5.0])
